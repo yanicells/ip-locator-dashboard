@@ -14,6 +14,7 @@ const HomePage = () => {
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [activeSearchResults, setActiveSearchResults] = useState([]);
+  const [searchInputs, setSearchInputs] = useState([]);
 
   // Fetch current user's IP on mount
   useEffect(() => {
@@ -85,12 +86,15 @@ const HomePage = () => {
 
   const handleClear = () => {
     setActiveSearchResults([]); // Clear active search results
+    setSearchInputs([]); // Clear search inputs
     fetchCurrentUserGeo();
   };
 
   const handleSelectHistory = (historyItem) => {
-    setCurrentGeoData(historyItem);
-    setError("");
+    // Set the IP in search bar and trigger search
+    setSearchInputs([historyItem.ip]);
+    // Trigger the search automatically
+    handleBatchSearch([historyItem.ip]);
   };
 
   return (
@@ -99,7 +103,11 @@ const HomePage = () => {
       <div className="w-[420px] overflow-y-auto bg-white border-r border-gray-200 z-20 flex flex-col">
         <Header />
         <div className="p-6 space-y-4">
-          <GeoSearch onSearch={handleBatchSearch} onClear={handleClear} />
+          <GeoSearch
+            onSearch={handleBatchSearch}
+            onClear={handleClear}
+            externalInputs={searchInputs}
+          />
           <GeoDisplay
             geoData={currentGeoData}
             loading={loading}

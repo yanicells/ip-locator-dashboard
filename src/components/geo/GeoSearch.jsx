@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import geoService from "../../services/geoService";
 
-const GeoSearch = ({ onSearch, onClear }) => {
+const GeoSearch = ({ onSearch, onClear, externalInputs }) => {
   const [inputs, setInputs] = useState([""]);
   const [errors, setErrors] = useState([]);
+
+  // Update inputs when externalInputs prop changes
+  useEffect(() => {
+    if (externalInputs && externalInputs.length > 0) {
+      setInputs(externalInputs);
+      setErrors([]);
+    }
+  }, [externalInputs]);
 
   const handleInputChange = (index, value) => {
     const newInputs = [...inputs];
