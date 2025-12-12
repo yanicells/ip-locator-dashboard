@@ -2,15 +2,6 @@
 
 A production-ready IP Geolocation application built with React, Vite, Tailwind CSS, and Zustand. This application allows users to search for IP address information and view geolocation details using the IPinfo.io API.
 
-## Features
-
-- 🔐 **Authentication**: Secure login system with JWT tokens
-- 🌍 **IP Geolocation**: Fetch current user's IP or search specific IP addresses
-- 📊 **Detailed Information**: View IP, city, region, country, location coordinates, hostname, and more
-- 📜 **Search History**: Automatically saves and displays recent searches (up to 10)
-- 🎨 **Minimal Design**: Clean, professional UI inspired by Google Maps aesthetic
-- 🏗️ **Service-Oriented Architecture**: Clean separation of concerns with dedicated service layer
-
 ## Tech Stack
 
 - **Framework**: React 19 + Vite
@@ -69,18 +60,6 @@ cd geo-web
 
 ```bash
 npm install
-```
-
-3. Create environment file (optional):
-
-```bash
-cp .env.example .env
-```
-
-4. Add your IPinfo token to `.env` (optional, for higher rate limits):
-
-```env
-VITE_IPINFO_TOKEN=your_token_here
 ```
 
 ## Running the Application

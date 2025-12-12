@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import useAppStore from "./store/useAppStore";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 
 // Protected Route component
@@ -24,6 +25,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/home"
           element={

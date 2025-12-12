@@ -3,10 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import useAppStore from "../../store/useAppStore";
 import authService from "../../services/authService";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const navigate = useNavigate();
-  const login = useAppStore((state) => state.login);
+  const register = useAppStore((state) => state.register);
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,11 +19,11 @@ const LoginForm = () => {
     setLoading(true);
 
     try {
-      const data = await authService.login(email, password);
-      login(data.user, data.token);
+      const data = await authService.register(name, email, password);
+      register(data.user, data.token);
       navigate("/home");
     } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+      setError(err.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -33,13 +34,31 @@ const LoginForm = () => {
       <div className="max-w-md w-full">
         <div className="bg-white rounded-xl shadow-lg p-8">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-primary">IP Geolocation</h2>
+            <h2 className="text-3xl font-bold text-primary">Create Account</h2>
             <p className="mt-2 text-sm text-gray-600">
-              Sign in to your account
+              Sign up to start tracking IP locations
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                placeholder="John Doe"
+              />
+            </div>
+
             <div>
               <label
                 htmlFor="email"
@@ -54,7 +73,7 @@ const LoginForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="admin@example.com"
+                placeholder="you@example.com"
               />
             </div>
 
@@ -87,25 +106,19 @@ const LoginForm = () => {
               disabled={loading}
               className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Creating account..." : "Sign up"}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/register"
+                to="/login"
                 className="text-primary hover:text-primary-dark font-medium"
               >
-                Sign up
+                Login
               </Link>
-            </p>
-          </div>
-
-          <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500">
-              Demo credentials: admin@example.com / password123
             </p>
           </div>
         </div>
@@ -114,4 +127,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
