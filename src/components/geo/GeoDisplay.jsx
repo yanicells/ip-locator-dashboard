@@ -1,9 +1,9 @@
 const GeoDisplay = ({ geoData, loading, error }) => {
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+      <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
         <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#313244]"></div>
         </div>
       </div>
     );
@@ -11,8 +11,8 @@ const GeoDisplay = ({ geoData, loading, error }) => {
 
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+      <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2.5 rounded-md text-sm">
           {error}
         </div>
       </div>
@@ -21,8 +21,8 @@ const GeoDisplay = ({ geoData, loading, error }) => {
 
   if (!geoData) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-        <p className="text-gray-500 text-center">No data available</p>
+      <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
+        <p className="text-gray-500 text-center text-sm">No data available</p>
       </div>
     );
   }
@@ -40,20 +40,23 @@ const GeoDisplay = ({ geoData, loading, error }) => {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold text-primary mb-6 pb-3 border-b-2 border-primary">
+    <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4 pb-3 border-b border-gray-300 uppercase tracking-wide">
         IP Information
-      </h2>
+      </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+      <div className="space-y-3">
         {dataFields.map(
           (field) =>
             field.value && (
-              <div key={field.label} className="space-y-1">
-                <dt className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              <div
+                key={field.label}
+                className="flex justify-between items-baseline gap-3"
+              >
+                <dt className="text-xs font-semibold text-gray-600 uppercase tracking-wide flex-shrink-0">
                   {field.label}
                 </dt>
-                <dd className="text-base text-gray-900 font-medium">
+                <dd className="text-sm text-gray-900 font-medium text-right break-all">
                   {field.value}
                 </dd>
               </div>

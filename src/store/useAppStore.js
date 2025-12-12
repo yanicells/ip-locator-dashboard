@@ -62,6 +62,13 @@ const useAppStore = create(
         }),
 
       clearHistory: () => set({ historyList: [] }),
+
+      removeFromHistory: (ipsToRemove) =>
+        set((state) => ({
+          historyList: state.historyList.filter(
+            (item) => !ipsToRemove.includes(item.ip)
+          ),
+        })),
     }),
     {
       name: "geo-app-storage",

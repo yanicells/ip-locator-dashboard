@@ -11,22 +11,29 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-primary shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <h1 className="text-xl font-semibold text-white">IP Geolocation</h1>
+    <header className="bg-[#313244] border-b border-gray-200 sticky top-0 z-30">
+      <div className="px-6 py-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-lg font-bold text-white tracking-tight">
+              IP Geolocation
+            </h1>
+            <p className="text-xs text-gray-300 mt-0.5">
+              Search and track IP addresses
+            </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {user && (
-              <span className="text-sm text-gray-300">
-                {user.name || user.email}
-              </span>
+              <div className="text-right">
+                <p className="text-xs text-gray-300 font-medium">
+                  {user.name || user.email}
+                </p>
+              </div>
             )}
             <button
               onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-white hover:bg-primary-light rounded-md transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-white bg-[#1e1e2e] hover:bg-[#181825] rounded-md transition-colors"
             >
               Logout
             </button>
