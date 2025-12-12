@@ -21,6 +21,13 @@ const useAppStore = create(
           isLoggedIn: true,
         }),
 
+      register: (user, token) =>
+        set({
+          user,
+          token,
+          isLoggedIn: true,
+        }),
+
       logout: () =>
         set({
           user: null,
