@@ -54,7 +54,27 @@ const AutoFitBounds = ({ markers }) => {
   return null;
 };
 
-const MapDisplay = ({ activeSearchResults, userLocation }) => {
+// Component to handle map resize when container changes
+const ResizeHandler = ({ triggerResize }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    // Small delay to ensure container has finished resizing
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 350); // Match transition duration
+
+    return () => clearTimeout(timer);
+  }, [triggerResize, map]);
+
+  return null;
+};
+
+const MapDisplay = ({
+  activeSearchResults,
+  userLocation,
+  sidebarCollapsed,
+}) => {
   // Parse location string "lat,long" into array [lat, lng]
   const parseLocation = (loc) => {
     if (!loc || typeof loc !== "string") return null;
@@ -182,6 +202,9 @@ const MapDisplay = ({ activeSearchResults, userLocation }) => {
 
           {/* Auto-fit bounds to show all markers */}
           <AutoFitBounds markers={markers} />
+
+          {/* Handle map resize when sidebar toggles */}
+          <ResizeHandler triggerResize={sidebarCollapsed} />
         </MapContainer>
       )}
     </div>

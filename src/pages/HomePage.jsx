@@ -153,6 +153,7 @@ const HomePage = () => {
         <MapDisplay
           activeSearchResults={activeSearchResults}
           userLocation={userLocation}
+          sidebarCollapsed={isSidebarCollapsed}
         />
       </div>
     </div>
