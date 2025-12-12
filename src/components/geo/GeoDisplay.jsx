@@ -71,10 +71,14 @@ const GeoDisplay = ({
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
+    <div
+      className={`bg-gray-50 rounded-lg border border-gray-200 ${
+        isExpanded ? "p-5" : "p-5"
+      }`}
+    >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between text-left mb-3"
+        className="w-full flex items-center justify-between text-left"
       >
         <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
           IP Information
@@ -160,7 +164,7 @@ const GeoDisplay = ({
       </button>
 
       {isExpanded && (
-        <div className="pt-3 border-t border-gray-300 space-y-3">
+        <div className="mt-3 pt-3 border-t border-gray-300 space-y-3">
           {dataFields.map(
             (field) =>
               field.value && (

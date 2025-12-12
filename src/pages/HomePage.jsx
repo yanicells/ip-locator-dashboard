@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "../components/common/Header";
 import GeoSearch from "../components/geo/GeoSearch";
 import GeoDisplay from "../components/geo/GeoDisplay";
@@ -9,13 +9,14 @@ import useAppStore from "../store/useAppStore";
 import geoService from "../services/geoService";
 
 const HomePage = () => {
-  const { setCurrentGeoData, addToHistory, currentGeoData, historyList } =
-    useAppStore();
+  const { setCurrentGeoData, addToHistory, currentGeoData } = useAppStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const [activeSearchResults, setActiveSearchResults] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const sidebarRef = useRef(null);
 
   // Fetch current user's IP on mount
   useEffect(() => {
@@ -30,8 +31,8 @@ const HomePage = () => {
       const data = await geoService.fetchGeoData();
       setCurrentGeoData(data);
       setUserLocation(data);
-      setActiveSearchResults([]); // Clear active search results
-      setSearchInputs([data.ip]); // Add user's IP to search bar without searching
+      setActiveSearchResults([]);
+      setSearchInputs([data.ip]);
     } catch (err) {
       setError(err.message || "Failed to fetch geolocation data");
     } finally {
@@ -44,7 +45,6 @@ const HomePage = () => {
     setError("");
 
     try {
-      // Fetch all IPs in parallel
       const promises = ipAddresses.map((ip) =>
         geoService.fetchGeoData(ip).catch((err) => ({
           error: true,
@@ -55,24 +55,19 @@ const HomePage = () => {
 
       const results = await Promise.all(promises);
 
-      // Filter out errors and add successful results to history
       const successfulResults = results.filter((result) => !result.error);
       const failedResults = results.filter((result) => result.error);
 
-      // Set active search results (these will be shown on the map)
       setActiveSearchResults(successfulResults);
 
-      // Add all successful results to history
       successfulResults.forEach((data) => {
         addToHistory(data);
       });
 
-      // Set the last successful result as current
       if (successfulResults.length > 0) {
         setCurrentGeoData(successfulResults[successfulResults.length - 1]);
       }
 
-      // Show error message if any failed
       if (failedResults.length > 0) {
         const errorMessages = failedResults
           .map((r) => `${r.ip}: ${r.message}`)
@@ -87,46 +82,70 @@ const HomePage = () => {
   };
 
   const handleClear = () => {
-    setActiveSearchResults([]); // Clear active search results
-    setSearchInputs([]); // Clear search inputs
+    setActiveSearchResults([]);
+    setSearchInputs([]);
     fetchCurrentUserGeo();
   };
 
   const handleSelectHistory = (historyItem) => {
-    // Set the IP in search bar and trigger search
+    const currentScrollPosition = sidebarRef.current?.scrollTop || 0;
+
     setSearchInputs([historyItem.ip]);
-    // Trigger the search automatically
     handleBatchSearch([historyItem.ip]);
+
+    setTimeout(() => {
+      if (sidebarRef.current) {
+        sidebarRef.current.scrollTop = currentScrollPosition;
+      }
+    }, 0);
   };
 
   const handleSelectPopularIP = (ip) => {
-    // Set the IP in search bar and trigger search
+    const currentScrollPosition = sidebarRef.current?.scrollTop || 0;
+
     setSearchInputs([ip]);
-    // Trigger the search automatically
     handleBatchSearch([ip]);
+
+    setTimeout(() => {
+      if (sidebarRef.current) {
+        sidebarRef.current.scrollTop = currentScrollPosition;
+      }
+    }, 0);
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gray-50 flex">
+    <div className="h-screen w-screen overflow-hidden bg-gray-50 flex relative">
       {/* Left Sidebar */}
-      <div className="w-[540px] overflow-y-auto bg-white border-r border-gray-200 z-20 flex flex-col scrollbar-hide">
-        <Header />
-        <div className="p-6 space-y-4">
-          <GeoSearch
-            onSearch={handleBatchSearch}
-            onClear={handleClear}
-            externalInputs={searchInputs}
-          />
-          <GeoDisplay
-            geoData={currentGeoData}
-            loading={loading}
-            error={error}
-            activeSearchResults={activeSearchResults}
-            onNavigate={(data) => setCurrentGeoData(data)}
-          />
-          <HistoryList onSelectHistory={handleSelectHistory} />
-          <PopularIPs onSelectIP={handleSelectPopularIP} />
-        </div>
+      <div
+        ref={sidebarRef}
+        className={`border-r border-gray-200 z-20 flex flex-col transition-all duration-300 ${
+          isSidebarCollapsed
+            ? "w-16 bg-[#313244]"
+            : "w-[540px] overflow-y-auto scrollbar-hide bg-white"
+        }`}
+      >
+        <Header
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
+        {!isSidebarCollapsed && (
+          <div className="p-6 space-y-4">
+            <GeoSearch
+              onSearch={handleBatchSearch}
+              onClear={handleClear}
+              externalInputs={searchInputs}
+            />
+            <GeoDisplay
+              geoData={currentGeoData}
+              loading={loading}
+              error={error}
+              activeSearchResults={activeSearchResults}
+              onNavigate={(data) => setCurrentGeoData(data)}
+            />
+            <HistoryList onSelectHistory={handleSelectHistory} />
+            <PopularIPs onSelectIP={handleSelectPopularIP} />
+          </div>
+        )}
       </div>
 
       {/* Right Map Area */}
