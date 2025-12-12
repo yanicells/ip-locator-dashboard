@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "../components/common/Header";
 import GeoSearch from "../components/geo/GeoSearch";
 import GeoDisplay from "../components/geo/GeoDisplay";
+import MapDisplay from "../components/geo/MapDisplay";
 import HistoryList from "../components/geo/HistoryList";
 import useAppStore from "../store/useAppStore";
 import geoService from "../services/geoService";
@@ -68,6 +69,12 @@ const HomePage = () => {
               loading={loading}
               error={error}
             />
+            {currentGeoData && currentGeoData.loc && (
+              <MapDisplay
+                location={currentGeoData.loc}
+                ipAddress={currentGeoData.ip}
+              />
+            )}
           </div>
 
           {/* Sidebar - 30% */}
