@@ -5,3 +5,16 @@
   --color-primary-dark: #1e1e2e;
   --color-primary-light: #45475a;
 }
+
+/* Hide scrollbars */
+@layer utilities {
+  .scrollbar-hide {
+    /* Firefox */
+    scrollbar-width: none;
+    /* Safari and Chrome */
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -4,6 +4,7 @@ import GeoSearch from "../components/geo/GeoSearch";
 import GeoDisplay from "../components/geo/GeoDisplay";
 import MapDisplay from "../components/geo/MapDisplay";
 import HistoryList from "../components/geo/HistoryList";
+import PopularIPs from "../components/geo/PopularIPs";
 import useAppStore from "../store/useAppStore";
 import geoService from "../services/geoService";
 
@@ -30,6 +31,7 @@ const HomePage = () => {
       setCurrentGeoData(data);
       setUserLocation(data);
       setActiveSearchResults([]); // Clear active search results
+      setSearchInputs([data.ip]); // Add user's IP to search bar without searching
     } catch (err) {
       setError(err.message || "Failed to fetch geolocation data");
     } finally {
@@ -97,10 +99,17 @@ const HomePage = () => {
     handleBatchSearch([historyItem.ip]);
   };
 
+  const handleSelectPopularIP = (ip) => {
+    // Set the IP in search bar and trigger search
+    setSearchInputs([ip]);
+    // Trigger the search automatically
+    handleBatchSearch([ip]);
+  };
+
   return (
     <div className="h-screen w-screen overflow-hidden bg-gray-50 flex">
       {/* Left Sidebar */}
-      <div className="w-[420px] overflow-y-auto bg-white border-r border-gray-200 z-20 flex flex-col">
+      <div className="w-[540px] overflow-y-auto bg-white border-r border-gray-200 z-20 flex flex-col scrollbar-hide">
         <Header />
         <div className="p-6 space-y-4">
           <GeoSearch
@@ -112,8 +121,11 @@ const HomePage = () => {
             geoData={currentGeoData}
             loading={loading}
             error={error}
+            activeSearchResults={activeSearchResults}
+            onNavigate={(data) => setCurrentGeoData(data)}
           />
           <HistoryList onSelectHistory={handleSelectHistory} />
+          <PopularIPs onSelectIP={handleSelectPopularIP} />
         </div>
       </div>
 
