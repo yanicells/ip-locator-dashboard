@@ -56,16 +56,36 @@ const HistoryList = ({ onSelectHistory }) => {
     <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
       <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-300">
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={
-              selectedItems.length > 0 &&
-              selectedItems.length === historyList.length
-            }
-            onChange={handleSelectAll}
-            className="w-4 h-4 text-[#313244] border-gray-300 rounded focus:ring-[#313244] cursor-pointer"
-            title="Select all"
-          />
+          <label className="relative flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={
+                selectedItems.length > 0 &&
+                selectedItems.length === historyList.length
+              }
+              onChange={handleSelectAll}
+              className="peer sr-only"
+              title="Select all"
+            />
+            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:bg-[#313244] peer-checked:border-[#313244] peer-hover:border-[#313244] transition-all flex items-center justify-center">
+              {selectedItems.length > 0 &&
+                selectedItems.length === historyList.length && (
+                  <svg
+                    className="w-2.5 h-2.5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                )}
+            </div>
+          </label>
           <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
             Search History
           </h3>
@@ -99,13 +119,32 @@ const HistoryList = ({ onSelectHistory }) => {
             }`}
           >
             <div className="flex items-start gap-2">
-              <input
-                type="checkbox"
-                checked={selectedItems.includes(item.ip)}
-                onChange={() => handleToggleSelect(item.ip)}
-                className="w-4 h-4 mt-0.5 text-[#313244] border-gray-300 rounded focus:ring-[#313244] cursor-pointer"
-                onClick={(e) => e.stopPropagation()}
-              />
+              <label className="relative flex items-center cursor-pointer mt-0.5">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.includes(item.ip)}
+                  onChange={() => handleToggleSelect(item.ip)}
+                  className="peer sr-only"
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:bg-[#313244] peer-checked:border-[#313244] peer-hover:border-[#313244] transition-all flex items-center justify-center">
+                  {selectedItems.includes(item.ip) && (
+                    <svg
+                      className="w-2.5 h-2.5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </label>
               <div
                 className="flex-1 min-w-0 cursor-pointer"
                 onClick={() => onSelectHistory(item)}
