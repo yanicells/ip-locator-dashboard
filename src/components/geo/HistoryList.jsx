@@ -41,16 +41,24 @@ const HistoryList = ({ onSelectHistory }) => {
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedItems.length > 0) {
-      removeFromHistory(selectedItems);
-      setSelectedItems([]);
+      try {
+        await removeFromHistory(selectedItems);
+        setSelectedItems([]);
+      } catch (error) {
+        console.error("Failed to delete history items:", error);
+      }
     }
   };
 
-  const handleClearAll = () => {
-    clearHistory();
-    setSelectedItems([]);
+  const handleClearAll = async () => {
+    try {
+      await clearHistory();
+      setSelectedItems([]);
+    } catch (error) {
+      console.error("Failed to clear history:", error);
+    }
   };
 
   return (
@@ -194,7 +202,7 @@ const HistoryList = ({ onSelectHistory }) => {
                       </p>
                     </div>
                     <span className="text-xs text-gray-400 whitespace-nowrap">
-                      {formatDate(item.timestamp)}
+                      {formatDate(item.timestamp || item.created_at)}
                     </span>
                   </div>
                 </div>

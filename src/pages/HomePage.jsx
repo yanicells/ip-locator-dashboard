@@ -9,7 +9,8 @@ import useAppStore from "../store/useAppStore";
 import geoService from "../services/geoService";
 
 const HomePage = () => {
-  const { setCurrentGeoData, addToHistory, currentGeoData } = useAppStore();
+  const { setCurrentGeoData, addToHistory, currentGeoData, fetchHistory } =
+    useAppStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
@@ -18,9 +19,12 @@ const HomePage = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const sidebarRef = useRef(null);
 
-  // Fetch current user's IP on mount
+  // Fetch current user's IP and history on mount
   useEffect(() => {
     fetchCurrentUserGeo();
+    fetchHistory().catch((err) =>
+      console.error("Failed to load history:", err)
+    );
   }, []);
 
   const fetchCurrentUserGeo = async () => {

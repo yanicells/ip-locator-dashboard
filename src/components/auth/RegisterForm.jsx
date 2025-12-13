@@ -5,7 +5,7 @@ import authService from "../../services/authService";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
-  const register = useAppStore((state) => state.register);
+  const { register, fetchHistory } = useAppStore();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +21,14 @@ const RegisterForm = () => {
     try {
       const data = await authService.register(name, email, password);
       register(data.user, data.token);
+
+      // Fetch history after successful registration (will be empty for new users)
+      try {
+        await fetchHistory();
+      } catch (historyErr) {
+        console.error("Failed to load history:", historyErr);
+      }
+
       navigate("/home");
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.");

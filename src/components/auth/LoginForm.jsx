@@ -5,7 +5,7 @@ import authService from "../../services/authService";
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const login = useAppStore((state) => state.login);
+  const { login, fetchHistory } = useAppStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +20,14 @@ const LoginForm = () => {
     try {
       const data = await authService.login(email, password);
       login(data.user, data.token);
+
+      // Fetch history after successful login
+      try {
+        await fetchHistory();
+      } catch (historyErr) {
+        console.error("Failed to load history:", historyErr);
+      }
+
       navigate("/home");
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
