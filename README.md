@@ -1,69 +1,61 @@
-# IP Geolocation Web
+# IP Geolocation Dashboard
 
-React + Vite + Tailwind + Zustand web client for IP geolocation. Login talks to a local auth API, geolocation uses ipinfo.io. Maps are rendered with React Leaflet.
+React frontend (Vite) for locating IP addresses with an interactive map, batch IP search, and synced search history.
+
+## Prerequisites
+
+- Node.js v20+ (npm included)
+
+## Local setup
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yanicells/ip-locator-dashboard
+cd geo-web
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Configure environment variables
+
+- Create a `.env` file in the project root.
+- Set the API base URL (local backend):
+
+```bash
+VITE_API_URL=http://localhost:8000
+```
+
+4. Run the development server
+
+```bash
+npm run dev
+```
+
+The app runs on http://localhost:5173 by default.
+
+## Usage
+- Login using admin@example.com / password123
+- Use the sidebar to search for IP addresses, view popular IPs, and manage your search history
+- Click on map pins to view IP details
+- History items can be clicked to re-open on the map or deleted
+- Sign up for a new account if needed
+- Explore batch IP search by adding multiple IPs in the input field
+- The map supports multiple pins for batch searches
 
 ## Features
 
-- Login screen (email/password) hitting `POST /api/login` at `http://localhost:8000`
-- Home screen auto-loads the current user IP from ipinfo
-- Batch IP search: multiple inputs, validate per IP, fetch in parallel, show markers for all results
-- Map: multi-marker, auto-fit bounds, supports navigation across searched IPs
-- History: persists last 10 searches, clickable, multi-select delete, preserves scroll position
-- Popular IP dropdown: quick-pick well-known IPs, triggers search
-- Collapsible panels: IP info (open by default), history (collapsed by default), popular list dropdown
+- Split-screen layout with a sidebar and full-screen map interface
+- Interactive map (Leaflet) that pins exact locations; supports multiple pins at once
+- Batch IP search with dynamic inputs for multiple IP lookups
+- Popular IPs dropdown for quick-select (Google, Cloudflare, Facebook)
+- History management synced with the backend; click to re-open on map; delete supported
+- Authentication with Login and Sign Up forms
 
-## Run locally
+## Deployment
 
-Prereqs: Node.js 18+, npm. Auth API running at `http://localhost:8000` with seeded user.
-
-```bash
-git clone <repo>
-cd geo-web
-npm install
-npm run dev
-# app at http://localhost:5173
-```
-
-Demo creds (seeded in API):
-
-- Email: admin@example.com
-- Password: password123
-
-## Build and preview
-
-```bash
-npm run build
-npm run preview
-```
-
-## API notes
-
-- Login: `POST http://localhost:8000/api/login` with `{ email, password }`
-- Geolocation: `GET https://ipinfo.io/{ip}/json?token=YOUR_TOKEN` or `GET https://ipinfo.io/json` for current IP
-
-## File map (web)
-
-```
-src/
-  components/
-    auth/LoginForm.jsx
-    common/Header.jsx
-    geo/GeoSearch.jsx
-    geo/GeoDisplay.jsx
-    geo/HistoryList.jsx
-    geo/PopularIPs.jsx
-    geo/MapDisplay.jsx
-  pages/HomePage.jsx
-  pages/LoginPage.jsx
-  services/authService.js
-  services/geoService.js
-  store/useAppStore.js
-  App.jsx
-  main.jsx
-  index.css
-```
-
-## Hosting
-
-- Build with `npm run build`
-- Deploy `dist/` to Vercel
+- Deployed on Vercel; configured to switch API URLs automatically in production
