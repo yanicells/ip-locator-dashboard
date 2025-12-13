@@ -4,7 +4,7 @@ import historyService from "../services/historyService";
 
 const useAppStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Auth state
       user: null,
       token: null,
@@ -118,7 +118,6 @@ const useAppStore = create(
         token: state.token,
         user: state.user,
         isLoggedIn: state.isLoggedIn,
-        // Remove historyList from persisted state - it's now in DB
       }),
     }
   )
