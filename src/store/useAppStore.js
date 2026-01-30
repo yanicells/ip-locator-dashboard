@@ -5,43 +5,14 @@ import historyService from "../services/historyService";
 const useAppStore = create(
   persist(
     (set) => ({
-      // Auth state
-      user: null,
-      token: null,
-      isLoggedIn: false,
-
       // Geo state
       currentGeoData: null,
       historyList: [],
 
-      // Auth actions
-      login: (user, token) =>
-        set({
-          user,
-          token,
-          isLoggedIn: true,
-        }),
-
-      register: (user, token) =>
-        set({
-          user,
-          token,
-          isLoggedIn: true,
-        }),
-
-      logout: () =>
-        set({
-          user: null,
-          token: null,
-          isLoggedIn: false,
-          currentGeoData: null,
-          historyList: [],
-        }),
-
       // Geo actions
       setCurrentGeoData: (data) => set({ currentGeoData: data }),
 
-      // Fetch history from API
+      // Fetch history from localStorage
       fetchHistory: async () => {
         try {
           const history = await historyService.fetchHistory();
@@ -52,12 +23,12 @@ const useAppStore = create(
         }
       },
 
-      // Add to history via API
+      // Add to history
       addToHistory: async (geoData) => {
         try {
           const newHistoryItem = await historyService.addToHistory(geoData);
 
-          // Update local state optimistically
+          // Update local state
           set((state) => {
             const exists = state.historyList.some(
               (item) => item.ip === geoData.ip
@@ -82,11 +53,10 @@ const useAppStore = create(
           });
         } catch (error) {
           console.error("Failed to add to history:", error);
-          // Continue without throwing to prevent UI disruption
         }
       },
 
-      // Clear all history via API
+      // Clear all history
       clearHistory: async () => {
         try {
           await historyService.clearAllHistory();
@@ -97,7 +67,7 @@ const useAppStore = create(
         }
       },
 
-      // Remove selected items from history via API
+      // Remove selected items from history
       removeFromHistory: async (ipsToRemove) => {
         try {
           await historyService.deleteHistory(ipsToRemove);
@@ -115,9 +85,8 @@ const useAppStore = create(
     {
       name: "geo-app-storage",
       partialize: (state) => ({
-        token: state.token,
-        user: state.user,
-        isLoggedIn: state.isLoggedIn,
+        // Only persist historyList now (no auth)
+        historyList: state.historyList,
       }),
     }
   )

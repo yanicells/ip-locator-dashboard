@@ -1,20 +1,25 @@
-import axios from "axios";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+const STORAGE_KEY = "geo-app-history";
+const MAX_HISTORY_ITEMS = 10;
 
 /**
- * Get auth headers with token
- * @returns {Object}
+ * Get history from localStorage
+ * @returns {Array}
  */
-const getAuthHeaders = () => {
-  const storage = localStorage.getItem("geo-app-storage");
-  if (!storage) return {};
+const getHistoryFromStorage = () => {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+};
 
-  const { state } = JSON.parse(storage);
-  const token = state?.token;
-
-  return token ? { Authorization: `Bearer ${token}` } : {};
+/**
+ * Save history to localStorage
+ * @param {Array} history
+ */
+const saveHistoryToStorage = (history) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 };
 
 /**
@@ -23,19 +28,8 @@ const getAuthHeaders = () => {
  * @returns {Promise<Array>}
  */
 export const fetchHistory = async (limit = 10) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/history`, {
-      headers: getAuthHeaders(),
-      params: { limit },
-    });
-
-    return response.data.history || [];
-  } catch (error) {
-    if (error.response?.status === 401) {
-      throw new Error("Unauthorized. Please login again.");
-    }
-    throw new Error(error.response?.data?.message || "Failed to fetch history");
-  }
+  const history = getHistoryFromStorage();
+  return history.slice(0, limit);
 };
 
 /**
@@ -44,34 +38,31 @@ export const fetchHistory = async (limit = 10) => {
  * @returns {Promise<Object>}
  */
 export const addToHistory = async (geoData) => {
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/history`,
-      {
-        ip: geoData.ip,
-        city: geoData.city || null,
-        region: geoData.region || null,
-        country: geoData.country || null,
-        loc: geoData.loc || null,
-        hostname: geoData.hostname || null,
-        org: geoData.org || null,
-        postal: geoData.postal || null,
-        timezone: geoData.timezone || null,
-      },
-      {
-        headers: getAuthHeaders(),
-      }
-    );
+  const history = getHistoryFromStorage();
+  
+  const newItem = {
+    id: crypto.randomUUID(),
+    ip: geoData.ip,
+    city: geoData.city || null,
+    region: geoData.region || null,
+    country: geoData.country || null,
+    loc: geoData.loc || null,
+    hostname: geoData.hostname || null,
+    org: geoData.org || null,
+    postal: geoData.postal || null,
+    timezone: geoData.timezone || null,
+    created_at: new Date().toISOString(),
+  };
 
-    return response.data;
-  } catch (error) {
-    if (error.response?.status === 401) {
-      throw new Error("Unauthorized. Please login again.");
-    }
-    throw new Error(
-      error.response?.data?.message || "Failed to add to history"
-    );
-  }
+  // Remove existing entry with same IP if exists
+  const filteredHistory = history.filter((item) => item.ip !== geoData.ip);
+  
+  // Add new item at the beginning and limit to MAX_HISTORY_ITEMS
+  const updatedHistory = [newItem, ...filteredHistory].slice(0, MAX_HISTORY_ITEMS);
+  
+  saveHistoryToStorage(updatedHistory);
+  
+  return newItem;
 };
 
 /**
@@ -80,36 +71,17 @@ export const addToHistory = async (geoData) => {
  * @returns {Promise<void>}
  */
 export const deleteHistory = async (ips) => {
-  try {
-    await axios.delete(`${API_BASE_URL}/history`, {
-      headers: getAuthHeaders(),
-      data: { ips },
-    });
-  } catch (error) {
-    if (error.response?.status === 401) {
-      throw new Error("Unauthorized. Please login again.");
-    }
-    throw new Error(
-      error.response?.data?.message || "Failed to delete history"
-    );
-  }
+  const history = getHistoryFromStorage();
+  const updatedHistory = history.filter((item) => !ips.includes(item.ip));
+  saveHistoryToStorage(updatedHistory);
 };
 
 /**
- * Clear all history for user
+ * Clear all history
  * @returns {Promise<void>}
  */
 export const clearAllHistory = async () => {
-  try {
-    await axios.delete(`${API_BASE_URL}/history/all`, {
-      headers: getAuthHeaders(),
-    });
-  } catch (error) {
-    if (error.response?.status === 401) {
-      throw new Error("Unauthorized. Please login again.");
-    }
-    throw new Error(error.response?.data?.message || "Failed to clear history");
-  }
+  saveHistoryToStorage([]);
 };
 
 export default {
