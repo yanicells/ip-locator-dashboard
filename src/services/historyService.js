@@ -39,7 +39,7 @@ export const fetchHistory = async (limit = 10) => {
  */
 export const addToHistory = async (geoData) => {
   const history = getHistoryFromStorage();
-  
+
   const newItem = {
     id: crypto.randomUUID(),
     ip: geoData.ip,
@@ -56,12 +56,15 @@ export const addToHistory = async (geoData) => {
 
   // Remove existing entry with same IP if exists
   const filteredHistory = history.filter((item) => item.ip !== geoData.ip);
-  
+
   // Add new item at the beginning and limit to MAX_HISTORY_ITEMS
-  const updatedHistory = [newItem, ...filteredHistory].slice(0, MAX_HISTORY_ITEMS);
-  
+  const updatedHistory = [newItem, ...filteredHistory].slice(
+    0,
+    MAX_HISTORY_ITEMS,
+  );
+
   saveHistoryToStorage(updatedHistory);
-  
+
   return newItem;
 };
 

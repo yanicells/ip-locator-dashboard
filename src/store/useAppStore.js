@@ -31,7 +31,7 @@ const useAppStore = create(
           // Update local state
           set((state) => {
             const exists = state.historyList.some(
-              (item) => item.ip === geoData.ip
+              (item) => item.ip === geoData.ip,
             );
 
             if (exists) {
@@ -73,7 +73,7 @@ const useAppStore = create(
           await historyService.deleteHistory(ipsToRemove);
           set((state) => ({
             historyList: state.historyList.filter(
-              (item) => !ipsToRemove.includes(item.ip)
+              (item) => !ipsToRemove.includes(item.ip),
             ),
           }));
         } catch (error) {
@@ -88,8 +88,8 @@ const useAppStore = create(
         // Only persist historyList now (no auth)
         historyList: state.historyList,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export default useAppStore;
