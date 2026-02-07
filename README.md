@@ -47,7 +47,7 @@ The app runs on http://localhost:5173 by default.
 - Explore batch IP search by adding multiple IPs in the input field
 - The map supports multiple pins for batch searches
 
-## Features
+## Features (db functionality removed)
 
 - Split-screen layout with a sidebar and full-screen map interface
 - Interactive map (Leaflet) that pins exact locations; supports multiple pins at once
